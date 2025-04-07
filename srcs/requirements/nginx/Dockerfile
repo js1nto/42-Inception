@@ -1,13 +1,11 @@
-FROM debian:latest
+FROM debian:buster
 
-# Install OpenSSL to configure TLS settings (if not already included)
-RUN apk add --no-cache openssl
 
-RUN apt update && apt upgrade && apt install -y \
-	nginx
+RUN apt -y update && apt install -y nginx && apt install openssl -y
 
-# Expose the HTTP port
-EXPOSE 80
+# COPY ./conf/default /etc/nginx/sites-available/
 
-# Start NGINX when the container runss
-CMD ['nginx', "-g", "daemon off;"]
+COPY ./tools/script.sh /
+
+
+CMD [ "/script.sh" ]

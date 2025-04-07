@@ -1,19 +1,39 @@
-#If you don’t already have SSL certificates, you can generate a self-signed certificate using OpenSSL.
-openssl req -newkey rsa:2048 -nodes -keyout nginx.key -x509 -out nginx.crt -days 365
+#!/bin/bash
 
-# Build the Docker image using the following command:
-docker build -t nginx-tls3 .
-
-# Get the current working directory
-current_path=$(pwd)
-
-# Now, run the container, making sure to map the certificate files properly:
-docker run -d \
-  -p 443:443 \
-  -v $(current_path)/to/nginx.crt:/secrets/ssl/certs/nginx.crt \
-  -v $(current_path)/to/nginx.key:/secrets/ssl/private/nginx.key \
-  nginx-tls3
+#
+# The command generates a new self-signed SSL certificate with the following:
+# 2048-bit RSA key.
+# validity of 365 days.
+# private key is saved to /etc/ssl/private/nginx-selfsigned.key.
+# self-signed certificate saved to a file specified by $CERTS_.
+# certificate contains subject information with details like country, locality, organization, organizational unit, and common name.
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out $CERTS_ -subj "/C=MO/L=KH/O=1337/OU=student/CN=sahafid.42.ma"
 
 
-# Verify TLS 1.3 Support (on 127.0.0.1 loopback IPv4)
-# -> curl -Iv https://127.0.0.1 --tlsv1.3
+echo "
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    #server_name www.$DOMAIN_NAME $DOMAIN_NAME;
+
+    ssl_certificate $CERTS_;
+    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;" > /etc/nginx/sites-available/default
+
+
+echo '
+    ssl_protocols TLSv1.3;
+
+    index index.php;
+    root /var/www/html;
+
+    location ~ [^/]\.php(/|$) { 
+            try_files $uri =404;
+            fastcgi_pass wordpress:9000;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
+} ' >>  /etc/nginx/sites-available/default
+
+
+nginx -g "daemon off;"
