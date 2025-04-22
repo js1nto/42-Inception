@@ -7,10 +7,12 @@ DB_ROOT_PW="12345"
 WP_USERPASS="123456"
 ADM_WP_PASS="1234567"
 
-echo "secrets" > project/.gitignore
 
 if [ ! -f ./srcs/.env ]; then
   touch ./srcs/.env
+fi
+
+truncate -s 0 ./srcs/.env
 
 # --- MAKE ENV ---------------------------
 echo "LOGIN=$LOGIN" >> ./srcs/.env
@@ -33,12 +35,26 @@ echo "WP_USERPASS=$WP_USERPASS" >> srcs/.env
 echo "DB_PASS=$DB_PW" >> srcs/.env
 echo "ADM_WP_PASS=$ADM_WP_PASS" >> srcs/.env
 # ------------------------------------------------
-
+echo "✅ .env file created."
 
 
 # --- SSL CERTIFICATE ---------------------------
 
-mkcert -key-file srcs/requirements/nginx/tools/${USER}.42.fr.key -cert-file srcs/requirements/nginx/tools/${USER}.42.fr.crt https://${USER}.42.fr
+CERT_FILE="./srcs/requirements/nginx/tools/${NAME}.42.fr.crt"
+KEY_FILE="./srcs/requirements/nginx/tools/${NAME}.42.fr.key"
+if [ ! -f ${CERT_FILE} ]; then
+  touch ${CERT_FILE}
+fi
+if [ ! -f ${KEY_FILE} ]; then
+  touch ${KEY_FILE}
+fi
 
-chmod 777 srcs/requirements/nginx/tools/${USER}.42.fr.key srcs/requirements/nginx/tools/${USER}.42.fr.crt
-# ------------------------------------------------
+openssl req -x509 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -keyout "$KEY_FILE" \
+  -out "$CERT_FILE" \
+  -subj "/C=US/ST=State/L=City/O=Org/OU=IT/CN=${NAME}"
+
+echo "✅ SSL certificate and key created:"
+echo " - Certificate: $CERT_FILE"
+echo " - Private Key: $KEY_FILE"
