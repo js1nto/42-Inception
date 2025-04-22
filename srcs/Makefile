@@ -1,12 +1,12 @@
 name = INECPTION
 
-.DEFAULT_GOAL = all
- 
-env:
-	./make_env.sh
+.DEFAULT_GOAL := start
 
-certs:
-	./make_certs.sh
+start: env_certs all
+ 
+env_certs:
+	@echo "🌱 Creating environment files and certificates..."
+	../create_project.sh
 
 all:
 	@printf "Launching ${name}...\n"
@@ -34,4 +34,4 @@ fclean: down
 	@docker compose -f ./srcs/docker-compose.yml down --volumes --rmi all --remove-orphans
 	@sudo rm -rf ~/data
  
-.PHONY : all build down clean fclean info env certs
+.PHONY : all build down clean fclean env_certs
