@@ -6,7 +6,7 @@ start: env_certs all
  
 env_certs:
 	@echo "🌱 Creating environment files and certificates..."
-	../create_project.sh
+	./create_project.sh
 
 all:
 	@printf "Launching ${name}...\n"
