@@ -1,48 +1,35 @@
 #!/bin/bash
 
-su -
+set -e  # Exit on error
 
+# Remove LibreOffice
 sudo apt-get purge libreoffice* -y
 sudo apt-get autoremove -y
 sudo apt-get clean
 
-sudo usermod -aG sudo $(whoami)
+# Fix sudoers safely
+echo "jsaintho ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jsaintho
 
-echo "
-# User privilege specification
-root ALL=(ALL:ALL) ALL
-jsaintho ALL=(ALL:ALL) NOPASSWD: ALL
-" >/etc/sudoers
-
+# Update and install dependencies
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install make curl lsb-release ca-certificates apt-transport-https software-properties-common hostsed -y
+sudo apt-get install -y make curl lsb-release ca-certificates apt-transport-https software-properties-common
+
+# Docker setup
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
 sudo apt-get update
-sudo apt-get install docker-ce -y
-sudo apt-get update
-sudo apt-get install docker-compose docker-compose-plugin -y
-sudo apt-get update
-sudo rm -rf /var/lib/apt/lists/*
+sudo apt-get install -y docker-ce docker-compose docker-compose-plugin
 
-if [ -d "/home/$USER/data" ]; then \
-	echo "/home/$USER/data already exists"; else \
-	mkdir /home/$USER/data; \
-	echo "data directory created successfully"; \
-fi
+# Create directories
+USER_HOME=$(getent passwd $(logname) | cut -d: -f6)
 
-if [ -d "/home/$USER/data/wordpress" ]; then \
-	echo "/home/$USER/data/wordpress already exists"; else \
-	mkdir /home/$USER/data/wordpress; \
-	echo "wordpress directory created successfully"; \
-fi
+mkdir -p "$USER_HOME/data/wordpress"
+mkdir -p "$USER_HOME/data/mariadb"
 
-if [ -d "/home/$USER/data/mariadb" ]; then \
-	echo "/home/$USER/data/mariadb already exists"; else \
-	mkdir /home/$USER/data/mariadb; \
-	echo "mariadb directory created successfully"; \
-fi
+echo "Data directories set up successfully."
 
-sudo usermod -aG docker $(whoami)
-echo "User $(whoami) added to Docker group."
+# Add user to docker group
+sudo usermod -aG docker $(logname)
+echo "User $(logname) added to Docker group."
