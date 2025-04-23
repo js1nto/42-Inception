@@ -10,27 +10,35 @@ root ALL=(ALL:ALL) ALL
 jsaintho ALL=(ALL:ALL) NOPASSWD: ALL
 " >/etc/sudoers
 
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install make curl lsb-release ca-certificates apt-transport-https software-properties-common hostsed -y
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce -y
+sudo apt-get update
+sudo apt-get install docker-compose docker-compose-plugin -y
+sudo apt-get update
+sudo rm -rf /var/lib/apt/lists/*
 
-sudo apt-get update -y && apt-get upgrade
-sudo apt-get install make curl
+if [ -d "/home/$USER/data" ]; then \
+	echo "/home/$USER/data already exists"; else \
+	mkdir /home/$USER/data; \
+	echo "data directory created successfully"; \
+fi
 
-echo "Installing Docker..."
-sudo apt update -y && sudo apt upgrade -y
-sudo apt install -y ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+if [ -d "/home/$USER/data/wordpress" ]; then \
+	echo "/home/$USER/data/wordpress already exists"; else \
+	mkdir /home/$USER/data/wordpress; \
+	echo "wordpress directory created successfully"; \
+fi
 
-echo "Creating Docker repository file..."
-sudo apt install -y ca-certificates curl gnupg lsb-release
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu noble stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-echo "Installing Docker packages..."
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-echo "Docker installed successfully!"
+if [ -d "/home/$USER/data/mariadb" ]; then \
+	echo "/home/$USER/data/mariadb already exists"; else \
+	mkdir /home/$USER/data/mariadb; \
+	echo "mariadb directory created successfully"; \
+fi
 
 sudo usermod -aG docker $(whoami)
 echo "User $(whoami) added to Docker group."
