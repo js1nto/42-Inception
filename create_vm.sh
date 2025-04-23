@@ -34,4 +34,7 @@ echo "Data directories set up successfully."
 sudo usermod -aG docker $(logname)
 echo "User $(logname) added to Docker group."
 
+sudo chmod 666 /var/run/docker.sock
+
 echo "✅ Setup complete!"
+
