@@ -1,35 +1,53 @@
 #!/bin/bash
 
-set -e  # Exit on error
+# Set your actual username here
+USERNAME="jsaintho"
 
-# Remove LibreOffice
-sudo apt-get purge libreoffice* -y
-sudo apt-get autoremove -y
-sudo apt-get clean
+# Ensure the script is run with sudo
+if [[ "$EUID" -ne 0 ]]; then
+  echo "Please run this script with sudo:"
+  echo "sudo $0"
+  exit 1
+fi
 
-# Fix sudoers safely
-echo "jsaintho ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jsaintho
+echo "Configuring sudoers for $USERNAME..."
 
-# Update and install dependencies
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install -y make curl lsb-release ca-certificates apt-transport-https software-properties-common
+# Backup sudoers first
+cp /etc/sudoers /etc/sudoers.bak
 
-# Docker setup
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add user to sudoers without password
+echo "$USERNAME ALL=(ALL:ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
 
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-compose docker-compose-plugin
+# Add user to sudo group
+usermod -aG sudo "$USERNAME"
 
-# Create directories
-USER_HOME=$(getent passwd $(logname) | cut -d: -f6)
+# System update
+echo "Updating the system..."
+apt-get update -y && apt-get upgrade -y
 
-mkdir -p "$USER_HOME/data/wordpress"
-mkdir -p "$USER_HOME/data/mariadb"
+# Install basic tools
+apt-get install -y make curl gnupg lsb-release ca-certificates
 
-echo "Data directories set up successfully."
+# Add Docker’s official GPG key:
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add user to docker group
-sudo usermod -aG docker $(logname)
-echo "User $(logname) added to Docker group."
+# Add Docker repository
+echo "Adding Docker repository..."
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+| tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Update package index
+apt-get update -y
+
+# Install Docker Engine and tools
+echo "Installing Docker..."
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Add the user to the docker group
+usermod -aG docker "$USERNAME"
+echo "User $USERNAME added to docker group."
+
+echo "✅ Setup complete! You may need to reboot for all changes to take effect."
