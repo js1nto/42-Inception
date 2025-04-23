@@ -2,6 +2,10 @@
 
 su -
 
+sudo apt-get purge libreoffice* -y
+sudo apt-get autoremove -y
+sudo apt-get clean
+
 sudo usermod -aG sudo $(whoami)
 
 echo "
