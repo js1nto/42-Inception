@@ -60,7 +60,7 @@ services:
     volumes:
       - wp-volume:/var/www/
     ports:
-      - "9000:80" # Expose port 9000 for PHP-FPM 
+      - "9000" # Expose port 9000 for PHP-FPM 
     networks:
       - inception
     restart: always
