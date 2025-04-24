@@ -59,7 +59,7 @@ services:
       - mariadb
     volumes:
       - wp-volume:/var/www/
-    expose:
+    ports:
       - "9000:80" # Expose port 9000 for PHP-FPM 
     networks:
       - inception
