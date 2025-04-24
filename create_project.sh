@@ -28,7 +28,7 @@ echo "WP_TITLE=INCEPTION_$NAME" >> ./srcs/.env
 echo "WP_USERNAME=$NAME" >> ./srcs/.env
 echo "WP_USEREMAIL=$NAME@42.fr" >> ./srcs/.env
 echo "WP_USERPASS=$NAME" >> ./srcs/.env
-echo "WP_HOST=$LOGIN.42.fr" >> ./srcs/.env
+echo "WP_HOST=$NAME.42.fr" >> ./srcs/.env
 echo "ADM_WP_NAME=$NAME" >> ./srcs/.env
 echo "ADM_WP_EMAIL=$NAME@42.fr" >> ./srcs/.env
 
