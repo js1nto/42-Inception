@@ -36,6 +36,13 @@ echo "DB_ROOT=$DB_ROOT_PW" >> srcs/.env
 echo "WP_USERPASS=$WP_USERPASS" >> srcs/.env 
 echo "DB_PASS=$DB_PW" >> srcs/.env
 echo "ADM_WP_PASS=$ADM_WP_PASS" >> srcs/.env
+
+
+# Get the current user using whoami
+USER_NAME=$(whoami)
+# Write the USER_NAME to the .env file
+echo "USER=$USER_NAME" >> srcs/.env
+
 # ------------------------------------------------
 echo "✅ .env file created."
 
