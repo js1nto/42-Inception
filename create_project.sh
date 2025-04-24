@@ -7,6 +7,7 @@ DB_ROOT_PW="12345"
 WP_USERPASS="123456"
 ADM_WP_PASS="1234567"
 
+rm -rf docker/overlay2/tubabzhuo2n8846rqcyzjkfs5/work/work
 docker system prune --all --volumes
 
 if [ ! -f ./srcs/.env ]; then
