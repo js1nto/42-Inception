@@ -7,6 +7,7 @@ DB_ROOT_PW="12345"
 WP_USERPASS="123456"
 ADM_WP_PASS="1234567"
 
+docker system prune --all --volumes
 
 if [ ! -f ./srcs/.env ]; then
   touch ./srcs/.env
