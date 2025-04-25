@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ]; then
+  echo "Erreur : Toutes les variables d'environnement (DB_PASS, DB_ROOT, DB_NAME) doivent être définies."
+  exit 1
+fi
+
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 
         chown -R mysql:mysql /var/lib/mysql
