@@ -12,24 +12,20 @@ echo "jsaintho ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jsaintho
 
 # Update and install dependencies
 sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install -y make curl lsb-release ca-certificates apt-transport-https software-properties-common
 
-# Docker setup for Debian
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "Installing Docker..."
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bookworm stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+echo "Creating Docker repository file..."
+echo "deb [arch=$$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $$(. /etc/os-release && echo $$VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-
-# Create directories
-USER_HOME=$(getent passwd $(logname) | cut -d: -f6)
-
-mkdir -p "$USER_HOME/data/wordpress"
-mkdir -p "$USER_HOME/data/mariadb"
-
-echo "Data directories set up successfully."
+echo "Installing Docker packages..."
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+echo "Docker installed successfully!"
 
 # Add user to docker group
 sudo usermod -aG docker $(logname)
