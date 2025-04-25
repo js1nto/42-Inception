@@ -32,6 +32,11 @@ echo "Docker installed successfully!"
 sudo usermod -aG docker $(logname)
 echo "User $(logname) added to Docker group."
 
+# INSTALL WP-CLI
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+mv wp-cli.phar /usr/local/bin/wp
+
 # Set Docker socket permissions (not always recommended, consider alternatives)
 sudo chmod 666 /var/run/docker.sock
 
