@@ -31,7 +31,7 @@ echo "WP_USERPASS=$NAME" >> ./srcs/.env
 echo "WP_HOST=$NAME.42.fr" >> ./srcs/.env
 echo "ADM_WP_NAME=$NAME" >> ./srcs/.env
 echo "ADM_WP_EMAIL=$NAME@42.fr" >> ./srcs/.env
-
+echo "PHP_VERSION=8.0" >> ./srcs/.env
 echo "DB_ROOT=$DB_ROOT_PW" >> srcs/.env
 echo "WP_USERPASS=$WP_USERPASS" >> srcs/.env 
 echo "DB_PASS=$DB_PW" >> srcs/.env
