@@ -8,6 +8,7 @@ sudo apt-get autoremove -y
 sudo apt-get clean
 
 # Fix sudoers safely
+su -
 echo "jsaintho ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jsaintho
 
 # Update and install dependencies
