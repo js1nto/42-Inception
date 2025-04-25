@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAME="juless"
+NAME="julesssaintho"
 LOGIN="jsaintho"
 DB_PW="1234"
 DB_ROOT_PW="12345"
