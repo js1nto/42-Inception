@@ -12,8 +12,6 @@ all:
 	@printf "Launching ${name}...\n"
 	@bash srcs/requirements/wordpress/tools/make_db_dirs.sh
 	@docker compose -f ./srcs/docker-compose.yml up -d --build
-	echo 'define('WP_HOME', 'https://yourdomain.com');' >> /home/jsaintho/data/wordpress/wp-config.php
-	echo 'define('WP_SITEURL', 'https://yourdomain.com');' >> /home/jsaintho/data/wordpress/wp-config.php
 
 build:
 	@printf "Building  ${name}...\n"
