@@ -39,5 +39,5 @@ else
 fi
 
 echo "🎉 Setup complete. Remember to log out and log back in for Docker group changes to take effect."
-
+exec sg docker newgrp `id -gn`
 
