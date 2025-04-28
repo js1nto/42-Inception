@@ -63,8 +63,9 @@ openssl req -x509 -nodes -days 365 \
   -keyout "$KEY_FILE" \
   -out "$CERT_FILE" \
   -subj "/C=US/ST=State/L=City/O=Org/OU=IT/CN=${NAME}"
-  
-echo "127.0.0.1  juless.42.fr" >> /etc/hosts
+
+# su -
+# echo "127.0.0.1  juless.42.fr" >> /etc/hosts
 
 echo "✅ SSL certificate and key created:"
 echo " - Certificate: $CERT_FILE"
