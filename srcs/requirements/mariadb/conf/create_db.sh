@@ -1,22 +1,19 @@
 #!/bin/bash
 
-# Optional: Check required environment variables
-# Uncomment if needed
-# if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER" ]; then
-#     echo "Erreur : Toutes les variables d'environnement (DB_PASS, DB_ROOT, DB_NAME, DB_USER) doivent être définies."
-#     exit 1
-# fi
+#if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ]; then
+#  echo "Erreur : Toutes les variables d'environnement (DB_PASS, DB_ROOT, DB_NAME) doivent être définies."
+#  exit 1
+#fi
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     chown -R mysql:mysql /var/lib/mysql
 
-    # Initialize the MariaDB system database
+    # init database
     mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm
 
-    tfile=$(mktemp)
+    tfile=`mktemp`
     if [ ! -f "$tfile" ]; then
-        echo "Erreur : impossible de créer un fichier temporaire."
-        exit 1
+        return 1
     fi
 fi
 
@@ -25,19 +22,16 @@ if [ ! -d "/var/lib/mysql/wordpress" ]; then
     cat << EOF > /tmp/create_db.sql
 USE mysql;
 FLUSH PRIVILEGES;
-
--- Clean up default users and test DB
 DELETE FROM mysql.user WHERE User='';
 DELETE FROM mysql.user WHERE User='wordpress_user';
 DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 
--- Set root password (MariaDB-compatible way)
-# UPDATE mysql.user SET Password = PASSWORD('${DB_ROOT}') WHERE User = 'root' AND Host = 'localhost';
+-- Set root password
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${DB_ROOT}');
 
--- Create WordPress DB and user
+-- Create WordPress DB and main user
 CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
 GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
@@ -46,26 +40,22 @@ FLUSH PRIVILEGES;
 -- Create non-admin WordPress user (subscriber)
 USE ${DB_NAME};
 
--- Define user credentials
-SET @username = 'user_';
-SET @password = MD5('1234'); -- Replace with a secure password
-SET @email = 'comment_user@example.com';
-
--- Insert user into wp_users
+-- Insert new WordPress subscriber user (using MD5 password)
 INSERT INTO wp_users (user_login, user_pass, user_nicename, user_email, user_status, display_name)
-VALUES (@username, @password, @username, @email, 0, @username);
+VALUES ('comment_user', MD5('1234'), 'comment_user', 'comment_user@example.com', 0, 'comment_user');
 
--- Get new user ID
+-- Assign subscriber role to the new user
 SET @user_id = LAST_INSERT_ID();
 
--- Assign subscriber role
+-- Insert the user's capabilities into wp_usermeta to give them the subscriber role
 INSERT INTO wp_usermeta (user_id, meta_key, meta_value)
 VALUES
 (@user_id, 'wp_capabilities', 'a:1:{s:10:"subscriber";b:1;}'),
 (@user_id, 'wp_user_level', '0');
+
 EOF
 
-    # Execute the SQL script in bootstrap mode
+    # Run the SQL script using MySQL bootstrap mode
     /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql
 
     # Optional: Clean up
