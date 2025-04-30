@@ -8,7 +8,7 @@
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     chown -R mysql:mysql /var/lib/mysql
 
-    # init database
+    # Initialize database
     mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm
 
     tfile=`mktemp`
@@ -61,3 +61,4 @@ EOF
     # Optional: Clean up
     # rm -f /tmp/create_db.sql
 fi
+
