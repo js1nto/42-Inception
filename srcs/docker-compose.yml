@@ -53,6 +53,8 @@ services:
         WP_USEREMAIL: ${WP_USEREMAIL}
         WP_USERPASS: ${WP_USERPASS}
         WP_HOST: ${WP_HOST}
+        READONLY_USER: ${READONLY_USER}
+        READONLY_PASS: ${READONLY_PASS}
     container_name: wordpress
     image: wordpress
     depends_on:
@@ -62,6 +64,7 @@ services:
     networks:
       - inception
     restart: always
+
 
 volumes:
   wp-volume:
