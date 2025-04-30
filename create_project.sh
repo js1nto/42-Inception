@@ -7,6 +7,7 @@ DB_ROOT_PW="12345"
 WP_USERPASS="123456"
 ADM_WP_PASS="1234567"
 READONLY_USER="pnj"
+READONLY_MAIL="pnj@yahoo.fr"
 READONLY_PASS="1234"
 
 rm -rf docker/overlay2/tubabzhuo2n8846rqcyzjkfs5/work/work
@@ -69,6 +70,20 @@ openssl req -x509 -nodes -days 365 \
 
 # su -
 # echo "127.0.0.1  juless.42.fr" >> /etc/hosts
+
+
+# Wait for WordPress to finish setting up (e.g., wp-config.php to exist)
+until wp core is-installed --path=/var/www/html; do
+    sleep 5
+done
+
+# Create non-admin WordPress user if not exists
+if ! wp user get "$READONLY_USER" --path=/var/www/html > /dev/null 2>&1; then
+    wp user create "$READONLY_USER" "$READONLY_MAIL" --user_pass="$READONLY_PASS" --role=subscriber --path=/var/www/html
+fi
+
+exec "$@"
+
 
 echo "✅ SSL certificate and key created:"
 echo " - Certificate: $CERT_FILE"
