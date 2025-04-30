@@ -33,9 +33,32 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT}';
 CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER '${DB_USER}'@'%' IDENTIFIED by '${DB_PASS}';
 GRANT ALL PRIVILEGES ON wordpress.* TO '${DB_USER}'@'%';
-FLUSH PRIVILEGES;
+FLUSH PRIVILEGES;.
+-- Create non-admin WordPress user (subscriber)
+USE ${DB_NAME};
+
+-- Define user credentials
+SET @username = 'comment_user';
+SET @password = MD5('user_password'); -- Replace with a secure password
+SET @email = 'comment_user@example.com';
+
+-- Insert into wp_users
+INSERT INTO wp_users (user_login, user_pass, user_nicename, user_email, user_status, display_name)
+VALUES (@username, @password, @username, @email, 0, @username);
+
+-- Get the new user ID
+SET @user_id = LAST_INSERT_ID();
+
+-- Assign subscriber role
+INSERT INTO wp_usermeta (user_id, meta_key, meta_value)
+VALUES
+(@user_id, 'wp_capabilities', 'a:1:{s:10:"subscriber";b:1;}'),
+(@user_id, 'wp_user_level', '0');
 EOF
-        # run init.sql
-        /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql
-        # rm -f /tmp/create_db.sql
+
+    # Run the SQL script using MySQL bootstrap mode
+    /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql
+
+    # Optional: clean up
+    # rm -f /tmp/create_db.sql
 fi
