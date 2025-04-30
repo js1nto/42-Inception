@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e  # Exit on error
 
+#su -
+#echo "jsaintho ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jsaintho
+
 # Remove LibreOffice
 sudo apt-get purge libreoffice* -y
 sudo apt-get autoremove -y
