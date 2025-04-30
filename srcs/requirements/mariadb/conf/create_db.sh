@@ -34,7 +34,8 @@ DELETE FROM mysql.db WHERE Db='test';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 
 -- Set root password (MariaDB-compatible way)
-UPDATE mysql.user SET Password = PASSWORD('${DB_ROOT}') WHERE User = 'root' AND Host = 'localhost';
+# UPDATE mysql.user SET Password = PASSWORD('${DB_ROOT}') WHERE User = 'root' AND Host = 'localhost';
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${DB_ROOT}');
 
 -- Create WordPress DB and user
 CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
