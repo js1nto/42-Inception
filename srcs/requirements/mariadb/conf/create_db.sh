@@ -38,8 +38,8 @@ FLUSH PRIVILEGES;
 USE ${DB_NAME};
 
 -- Define user credentials
-SET @username = 'comment_user';
-SET @password = MD5('user_password'); -- Replace with a secure password
+SET @username = 'user_';
+SET @password = MD5('1234'); -- Replace with a secure password
 SET @email = 'comment_user@example.com';
 
 -- Insert into wp_users
