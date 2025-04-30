@@ -3,6 +3,8 @@ set -e  # Exit on error
 
 #su -
 #echo "jsaintho ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jsaintho
+# su -
+# echo "127.0.0.1  juless.42.fr" >> /etc/hosts
 
 # Remove LibreOffice
 sudo apt-get purge libreoffice* -y
