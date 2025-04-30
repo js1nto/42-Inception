@@ -33,7 +33,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT}';
 CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER '${DB_USER}'@'%' IDENTIFIED by '${DB_PASS}';
 GRANT ALL PRIVILEGES ON wordpress.* TO '${DB_USER}'@'%';
-FLUSH PRIVILEGES;.
+FLUSH PRIVILEGES;
 -- Create non-admin WordPress user (subscriber)
 USE ${DB_NAME};
 
