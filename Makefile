@@ -28,6 +28,8 @@ clean:
 	@docker container prune --force
 	@docker image prune --force
 	@sudo rm -rf ~/data
+create_users:
+	docker-compose exec wordpress bash -c 'set -a && . /var/www/.env && set +a && wp user create "$WP_READONLY_NAME" "$WP_READONLY_EMAIL" --role=subscriber --user_pass="$WP_READONLY_PASS"'
 
 fclean: down
 	@printf "Clean of all docker configs\n"
