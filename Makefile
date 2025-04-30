@@ -12,6 +12,9 @@ all:
 	@printf "Launching ${name}...\n"
 	@bash srcs/requirements/wordpress/tools/make_db_dirs.sh
 	@docker compose -f ./srcs/docker-compose.yml up -d --build
+	@sleep 12 # crude wait for WordPress to initialize
+	@docker exec wordpress wp core is-installed --path=/var/www/html
+	@docker exec wordpress wp user create "${WP_USERNAME}" "${WP_USEREMAIL}" --user_pass="${WP_USERPASS}" --role=subscriber --path=/var/www/html
 
 build:
 	@printf "Building  ${name}...\n"
