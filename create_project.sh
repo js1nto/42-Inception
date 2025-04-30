@@ -73,16 +73,16 @@ openssl req -x509 -nodes -days 365 \
 
 
 # Wait for WordPress to finish setting up (e.g., wp-config.php to exist)
-until wp core is-installed --path=/var/www/html; do
-    sleep 5
-done
+#until wp core is-installed --path=/var/www/html; do
+#    sleep 5
+#done
 
 # Create non-admin WordPress user if not exists
-if ! wp user get "$READONLY_USER" --path=/var/www/html > /dev/null 2>&1; then
-    wp user create "$READONLY_USER" "$READONLY_MAIL" --user_pass="$READONLY_PASS" --role=subscriber --path=/var/www/html
-fi
+#if ! wp user get "$READONLY_USER" --path=/var/www/html > /dev/null 2>&1; then
+#    wp user create "$READONLY_USER" "$READONLY_MAIL" --user_pass="$READONLY_PASS" --role=subscriber --path=/var/www/html
+#fi
 
-exec "$@"
+#exec "$@"
 
 
 echo "✅ SSL certificate and key created:"
