@@ -26,8 +26,8 @@ services:
         DB_USER: ${DB_USER}
         DB_PASS: ${DB_PASS}
         DB_ROOT: ${DB_ROOT}
-        DB_USER2: ${DB_USER2}
-        DB_PASS2: ${DB_PASS2}
+        READONLY_USER: ${READONLY_USER}
+        READONLY_PASS: ${READONLY_PASS}
     container_name: mariadb
     image: mariadb
     ports:
