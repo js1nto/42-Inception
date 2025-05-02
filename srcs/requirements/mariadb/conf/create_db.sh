@@ -36,17 +36,6 @@ CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
 GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
 
--- Insert non-admin WordPress user
-USE ${DB_NAME};
-
-INSERT INTO wp_users (user_login, user_pass, user_nicename, user_email, user_status, display_name)
-VALUES ('${READONLY_USER}', MD5('${READONLY_PASS}'), '${READONLY_USER}', '${READONLY_USER}@example.com', 0, '${READONLY_USER}');
-
-SET @user_id = LAST_INSERT_ID();
-
-INSERT INTO wp_usermeta (user_id, meta_key, meta_value) VALUES
-(@user_id, 'wp_capabilities', 'a:1:{s:6:"editor";b:1;}'),
-(@user_id, 'wp_user_level', '7');
 
 FLUSH PRIVILEGES;
 EOF
