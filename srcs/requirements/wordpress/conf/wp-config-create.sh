@@ -8,7 +8,7 @@ if [ ! -f "/var/www/wp-config.php" ]; then
   /usr/local/bin/wp core install --url="https://${WP_HOST}" --title="${WP_TITLE}" --admin_user="${ADM_WP_NAME}" --admin_password="${ADM_WP_PASS}" --admin_email="${ADM_WP_EMAIL}"
   /usr/local/bin/wp user create "${WP_USERNAME}" "${WP_USEREMAIL}" --role="editor" --user_pass="${WP_USERPASS}"
   # Add non-admin WordPress user after installation
-  /usr/local/bin/wp user create "${READONLY_USER}" "${READONLY_USER}@example.com" --user_pass="${READONLY_PASS}" --role="editor"
+  /usr/local/bin/wp user create "${READONLY_USER}" "${READONLY_USER}@example.com" --user_pass="${READONLY_PASS}" --role="suscriber"
 fi
 
 
