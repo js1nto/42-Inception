@@ -57,21 +57,6 @@ services:
         WP_HOST: ${WP_HOST}
         READONLY_USER: ${READONLY_USER}
         READONLY_PASS: ${READONLY_PASS}
-      environment:
-          - DB_NAME=${DB_NAME}
-          - DB_USER=${DB_USER}
-          - DB_PASS=${DB_PASS}
-          - DB_HOST=${DB_HOST}
-          - WP_TITLE=${WP_TITLE}
-          - ADM_WP_NAME=${ADM_WP_NAME}
-          - ADM_WP_PASS=${ADM_WP_PASS}
-          - ADM_WP_EMAIL=${ADM_WP_EMAIL}
-          - WP_USERNAME=${WP_USERNAME}
-          - WP_USEREMAIL=${WP_USEREMAIL}
-          - WP_USERPASS=${WP_USERPASS}
-          - WP_HOST=${WP_HOST}
-          - READONLY_USER=${READONLY_USER}
-          - READONLY_PASS=${READONLY_PASS}
     container_name: wordpress
     image: wordpress
     depends_on:
