@@ -36,23 +36,6 @@ CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
 GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
 
--- Create non-admin user (e.g., contributor)
-CREATE USER '${DB_USER2}'@'%' IDENTIFIED BY '${DB_PASS2}';
-GRANT SELECT, INSERT, UPDATE ON ${DB_NAME}.* TO '${DB_USER2}'@'%';
-
--- Insert non-admin user into wp_users table
-USE ${DB_NAME};
-INSERT INTO wp_users (user_login, user_pass, user_email, user_registered, user_status) 
-VALUES ('${DB_USER2}', MD5('${DB_PASS2}'), '${DB_USER2}@example.com', NOW(), 0);
-
--- Assign non-admin user role (e.g., contributor)
-INSERT INTO wp_usermeta (user_id, meta_key, meta_value) 
-VALUES (LAST_INSERT_ID(), 'wp_capabilities', 'a:1:{s:11:"contributor";b:1;}');
-
--- Set user level for contributor (level 1)
-INSERT INTO wp_usermeta (user_id, meta_key, meta_value) 
-VALUES (LAST_INSERT_ID(), 'wp_user_level', 1);
-
 FLUSH PRIVILEGES;
 EOF
 
