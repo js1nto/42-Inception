@@ -17,7 +17,7 @@ services:
       - inception
     restart: always
 
-  mariadb:
+ mariadb:
     build:
       context: .
       dockerfile: requirements/mariadb/Dockerfile
@@ -26,6 +26,8 @@ services:
         DB_USER: ${DB_USER}
         DB_PASS: ${DB_PASS}
         DB_ROOT: ${DB_ROOT}
+        DB_USER2: ${DB_USER2}         # 👈 Non-admin user
+        DB_PASS2: ${DB_PASS2}         # 👈 Non-admin password
     container_name: mariadb
     image: mariadb
     ports:
