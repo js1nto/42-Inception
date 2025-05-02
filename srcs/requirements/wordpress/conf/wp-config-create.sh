@@ -20,13 +20,13 @@ if [ ! -f "/var/www/wp-config.php" ]; then
 fi
 
 # Always attempt to create/update users
-/usr/local/bin/wp user get "${WP_USERNAME}" >/dev/null 2>&1 || \
-/usr/local/bin/wp user create "${WP_USERNAME}" "${WP_USEREMAIL}" \
-  --role="editor" \
-  --user_pass="${WP_USERPASS}"
+#/usr/local/bin/wp user get "${WP_USERNAME}" >/dev/null 2>&1 || \
+#/usr/local/bin/wp user create "${WP_USERNAME}" "${WP_USEREMAIL}" \
+#  --role="editor" \
+#  --user_pass="${WP_USERPASS}"
 
-/usr/local/bin/wp user get "${WP_READONLY_NAME}" >/dev/null 2>&1 || \
-/usr/local/bin/wp user create "${WP_READONLY_NAME}" "${WP_READONLY_EMAIL}" \
-  --role="subscriber" \
-  --user_pass="${WP_READONLY_PASS}"
+#/usr/local/bin/wp user get "${WP_READONLY_NAME}" >/dev/null 2>&1 || \
+#/usr/local/bin/wp user create "${WP_READONLY_NAME}" "${WP_READONLY_EMAIL}" \
+#  --role="subscriber" \
+#  --user_pass="${WP_READONLY_PASS}"
 
