@@ -36,6 +36,8 @@ CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
 GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
 
+INSERT INTO wp_users (user_login, user_pass, user_email, user_registered, user_status) 
+VALUES ('newuser', MD5('password123'), 'newuser@example.com', NOW(), 0);
 
 FLUSH PRIVILEGES;
 EOF
