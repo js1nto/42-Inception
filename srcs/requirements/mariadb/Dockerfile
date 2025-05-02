@@ -3,8 +3,8 @@ FROM alpine:3.20.2
 ARG DB_NAME \
     DB_USER \
     DB_PASS \
-    DB_USER2 \
-    DB_PASS2
+    READONLY_USER \
+    READONLY_PASS
 
 RUN apk update && apk add --no-cache mariadb mariadb-client
 
