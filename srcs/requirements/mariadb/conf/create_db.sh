@@ -1,41 +1,51 @@
 #!/bin/bash
 
-#if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ]; then
-
-#  echo "Erreur : Toutes les variables d'environnement (DB_PASS, DB_ROOT, DB_NAME) doivent être définies."
+# Check environment variables (optional but recommended)
+#if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER2" ] || [ -z "$DB_PASS2" ]; then
+#  echo "Error: Required environment variables (DB_PASS, DB_ROOT, DB_NAME, DB_USER2, DB_PASS2) are not set."
 #  exit 1
 #fi
 
+# Initialize MySQL if not already initialized
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-
-        chown -R mysql:mysql /var/lib/mysql
-
-        # init database
-        mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm
-
-        tfile=`mktemp`
-        if [ ! -f "$tfile" ]; then
-                return 1
-        fi
+    chown -R mysql:mysql /var/lib/mysql
+    mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm
 fi
 
+# Set up WordPress database and users if it doesn't exist
 if [ ! -d "/var/lib/mysql/wordpress" ]; then
 
-        cat << EOF > /tmp/create_db.sql
+    cat << EOF > /tmp/create_db.sql
 USE mysql;
 FLUSH PRIVILEGES;
-DELETE FROM     mysql.user WHERE User='';
-DELETE FROM     mysql.user WHERE User='wordpress_user';
-DROP DATABASE test;
+
+-- Clean up default/test users
+DELETE FROM mysql.user WHERE User='';
+DELETE FROM mysql.user WHERE User='wordpress_user';
+DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+
+-- Set root password
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT}';
+
+-- Create WordPress database
 CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
-CREATE USER '${DB_USER}'@'%' IDENTIFIED by '${DB_PASS}';
-GRANT ALL PRIVILEGES ON wordpress.* TO '${DB_USER}'@'%';
+
+-- Create admin user
+CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
+GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
+
+-- Create non-admin user with limited permissions
+CREATE USER '${DB_USER2}'@'%' IDENTIFIED BY '${DB_PASS2}';
+GRANT SELECT, INSERT, UPDATE ON ${DB_NAME}.* TO '${DB_USER2}'@'%';
+
 FLUSH PRIVILEGES;
 EOF
-        # run init.sql
-        /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql
-        # rm -f /tmp/create_db.sql
+
+    # Run the SQL bootstrap
+    /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql
+
+    # Optional cleanup
+    # rm -f /tmp/create_db.sql
 fi
