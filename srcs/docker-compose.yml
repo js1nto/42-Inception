@@ -66,6 +66,8 @@ services:
       - wp-volume:/var/www/
     networks:
       - inception
+    env_file:
+      - ./.env
     restart: always
 
 
