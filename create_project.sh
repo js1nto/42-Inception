@@ -24,10 +24,6 @@ echo "LOGIN=$LOGIN" >> ./srcs/.env
 echo "DOMAIN_NAME=$LOGIN.42.fr" >> ./srcs/.env
 echo "CERT_=./requirements/tools/$LOGIN.42.fr.crt" >> ./srcs/.env
 echo "KEY_=./requirements/tools/$LOGIN.42.fr.key" >> ./srcs/.env
-echo "DB_NAME=wordpress" >> ./srcs/.env
-echo "DB_USER=wpuser" >> ./srcs/.env
-echo "DB_HOST=mariadb" >> ./srcs/.env
-echo "DB_USERPASS=1234" >> ./srcs/.env
 echo "WP_TITLE=INCEPTION_$NAME" >> ./srcs/.env
 echo "WP_USERNAME=$NAME" >> ./srcs/.env
 echo "WP_USEREMAIL=$NAME@42.fr" >> ./srcs/.env
@@ -42,6 +38,14 @@ echo "DB_PASS=$DB_PW" >> srcs/.env
 echo "ADM_WP_PASS=$ADM_WP_PASS" >> srcs/.env
 echo "READONLY_USER=$READONLY_USER" >> srcs/.env
 echo "READONLY_PASS=$READONLY_PASS" >> srcs/.env
+
+echo "LOGIN=jsaintho" >> srcs/.env
+echo "MARIADB_USER=user" >> srcs/.env
+echo "MARIADB_USER_PASSWORD=safepwd" >> srcs/.env
+echo "MARIADB_NAME=wordpress" >> srcs/.env
+echo "MARIADB_HOST=mariadb:3306" >> srcs/.env
+echo "MARIADB_ROOT_PASSWORD=safepwdroot" >> srcs/.env
+echo "DOMAIN_NAME=juless.42.fr" >> srcs/.env
 # Get the current user using whoami
 USER_NAME=$(whoami)
 # Write the USER_NAME to the .env file
