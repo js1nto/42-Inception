@@ -21,13 +21,6 @@ services:
     build:
       context: .
       dockerfile: requirements/mariadb/Dockerfile
-      args:
-        DB_NAME: ${DB_NAME}
-        DB_USER: ${DB_USER}
-        DB_PASS: ${DB_PASS}
-        DB_ROOT: ${DB_ROOT}
-        READONLY_USER: ${READONLY_USER}
-        READONLY_PASS: ${READONLY_PASS}
     container_name: mariadb
     image: mariadb
     ports:
@@ -36,6 +29,8 @@ services:
       - db-volume:/var/lib/mysql
     networks:
       - inception
+    env_file:
+      - ./.env
     restart: always
 
   wordpress:
