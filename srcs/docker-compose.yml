@@ -21,6 +21,12 @@ services:
     build:
       context: .
       dockerfile: requirements/mariadb/Dockerfile
+      args:
+        MARIADB_USER: ${MARIADB_USER}
+        MARIADB_USER_PASSWORD: ${MARIADB_USER_PASSWORD}
+        MARIADB_NAME: ${MARIADB_NAME}
+        MARIADB_HOST: ${MARIADB_HOST}
+        MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     container_name: mariadb
     image: mariadb
     ports:
