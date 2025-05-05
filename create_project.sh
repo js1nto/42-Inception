@@ -6,9 +6,9 @@ DB_PW="1234"
 DB_ROOT_PW="12345"
 WP_USERPASS="123456"
 ADM_WP_PASS="1234567"
-READONLY_USER="pnj"
+READONLY_USER="pnjpnj"
 READONLY_MAIL="pnj@yahoo.fr"
-READONLY_PASS="1234"
+READONLY_PASS="12121212"
 
 rm -rf docker/overlay2/tubabzhuo2n8846rqcyzjkfs5/work/work
 docker system prune --all --volumes
