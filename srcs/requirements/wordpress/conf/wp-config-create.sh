@@ -7,6 +7,7 @@ if [ ! -f "/var/www/wp-config.php" ]; then
   
   /usr/local/bin/wp core install --url="https://${WP_HOST}" --title="${WP_TITLE}" --admin_user="${ADM_WP_NAME}" --admin_password="${ADM_WP_PASS}" --admin_email="${ADM_WP_EMAIL}"
   /usr/local/bin/wp user create "${WP_USERNAME}" "${WP_USEREMAIL}" --role="editor" --user_pass="${WP_USERPASS}"
+  /usr/local/bin/wp user create "${READONLY_USER}" "${READONLY_USER}@wer.com" --role="subscriber" --user_pass="${READONLY_PASS}"
 
   # Check for required environment variables
   if [[ -z "$READONLY_USER" || -z "$READONLY_PASS" ]]; then
