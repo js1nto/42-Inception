@@ -11,10 +11,10 @@ mysqld_safe --datadir=/var/lib/mysql &
 sleep 5
 
 # ✅ Vérification des variables d'environnement
-if [ -z "$MARIADB_USER" ] || [ -z "$MARIADB_USER_PASSWORD" ] || [ -z "$MARIADB_ROOT_PASSWORD" ] || [ -z "$MARIADB_NAME" ]; then
-  echo "Erreur : Toutes les variables d'environnement (MARIADB_USER, MARIADB_USER_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_NAME) doivent être définies."
-  exit 1
-fi
+#if [ -z "$MARIADB_USER" ] || [ -z "$MARIADB_USER_PASSWORD" ] || [ -z "$MARIADB_ROOT_PASSWORD" ] || [ -z "$MARIADB_NAME" ]; then
+#  echo "Erreur : Toutes les variables d'environnement (MARIADB_USER, MARIADB_USER_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_NAME) doivent être définies."
+#  exit 1
+#fi
 
 # 🔄 Attente que MariaDB soit prêt
 until mariadb -u root -e "SELECT 1" > /dev/null 2>&1; do
