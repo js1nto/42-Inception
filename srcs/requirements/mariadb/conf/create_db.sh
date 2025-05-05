@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Check environment variables (optional but recommended)
-if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER2" ] || [ -z "$DB_PASS2" ]; then
-    echo "Error: Required environment variables (DB_PASS, DB_ROOT, DB_NAME, DB_USER2, DB_PASS2) are not set."
-    exit 1
-fi
+#if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER2" ] || [ -z "$DB_PASS2" ]; then
+#    echo "Error: Required environment variables (DB_PASS, DB_ROOT, DB_NAME, DB_USER2, DB_PASS2) are not set."
+#    exit 1
+#fi
 
 # Initialize MySQL if not already initialized
 if [ ! -d "/var/lib/mysql/mysql" ]; then
