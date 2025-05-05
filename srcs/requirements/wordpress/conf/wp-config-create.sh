@@ -14,6 +14,9 @@ if [ ! -f "/var/www/wp-config.php" ]; then
     --admin_password="${ADM_WP_PASS}" \
     --admin_email="${ADM_WP_EMAIL}"
 fi
+# Confirm we can list users
+wp user list
+
   /usr/local/bin/wp user create "${WP_USERNAME}" "${WP_USEREMAIL}" --role="editor" --user_pass="${WP_USERPASS}" --network
   /usr/local/bin/wp user create "${READONLY_USER}" "${READONLY_USER}@wer.com" --role="subscriber" --user_pass="${READONLY_PASS}"
 
