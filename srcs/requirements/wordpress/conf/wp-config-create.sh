@@ -14,11 +14,11 @@ if [ ! -f "/var/www/wp-config.php" ]; then
     exit 1
   fi
   # Check if user already exists
-  if wp user get "$READONLY_USER" > /dev/null 2>&1; then
+  if /usr/local/bin/wp user get "$READONLY_USER" > /dev/null 2>&1; then
     echo "User '$READONLY_USER' already exists. Skipping creation."
   else
     echo "Creating WordPress user: $READONLY_USER"
-    wp user create "$READONLY_USER" "${READONLY_USER}@example.com" \
+    /usr/local/bin/wp user create "$READONLY_USER" "${READONLY_USER}@example.com" \
       --user_pass="$READONLY_PASS" --role="subscriber" || {
       echo "Failed to create user $READONLY_USER"
       exit 1
