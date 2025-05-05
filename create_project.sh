@@ -6,9 +6,9 @@ DB_PW="1234"
 DB_ROOT_PW="12345"
 WP_USERPASS="123456"
 ADM_WP_PASS="1234567"
-READONLY_USER="pnjpnj"
+READONLY_USER="pnj"
 READONLY_MAIL="pnj@yahoo.fr"
-READONLY_PASS="12121212"
+READONLY_PASS="121212"
 
 rm -rf docker/overlay2/tubabzhuo2n8846rqcyzjkfs5/work/work
 docker system prune --all --volumes
@@ -40,7 +40,7 @@ echo "WP_USERPASS=$WP_USERPASS" >> srcs/.env
 echo "DB_PASS=$DB_PW" >> srcs/.env
 echo "ADM_WP_PASS=$ADM_WP_PASS" >> srcs/.env
 echo "READONLY_USER=$READONLY_USER" >> srcs/.env
-echo "READONLY_USER=$READONLY_PASS" >> srcs/.env
+echo "READONLY_PASS=$READONLY_PASS" >> srcs/.env
 # Get the current user using whoami
 USER_NAME=$(whoami)
 # Write the USER_NAME to the .env file
