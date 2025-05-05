@@ -23,7 +23,7 @@ until mariadb -u root -e "SELECT 1"; do
   echo "Waiting for MariaDB to be ready..."
   sleep 2
 done
-
+echo "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '';" | mysql -u root
 echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_USER_PASSWORD';" | mysql -u root
 echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD';" | mysql -u root
 
