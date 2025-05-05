@@ -1,42 +1,48 @@
 #!/bin/sh
-cd /var/www/ 
-if [ ! -f "/var/www/wp-config.php" ]; then
-  # wp cli update
-  /usr/local/bin/wp config create --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --force
-  /usr/local/bin/wp config set FS_METHOD 'direct'
-  
-  #/usr/local/bin/wp core install --url="https://${WP_HOST}" --title="${WP_TITLE}" --admin_user="${ADM_WP_NAME}" --admin_password="${ADM_WP_PASS}" --admin_email="${ADM_WP_EMAIL}"
- if ! /usr/local/bin/wp core is-installed; then
-  /usr/local/bin/wp core install \
-    --url="https://${WP_HOST}" \
-    --title="${WP_TITLE}" \
-    --admin_user="${ADM_WP_NAME}" \
-    --admin_password="${ADM_WP_PASS}" \
-    --admin_email="${ADM_WP_EMAIL}"
-fi
-# Confirm we can list users
-wp user list
+
+sleep 5
+
 
   /usr/local/bin/wp user create "${WP_USERNAME}" "${WP_USEREMAIL}" --role="editor" --user_pass="${WP_USERPASS}" --network
-  /usr/local/bin/wp user create "${READONLY_USER}" "${READONLY_USER}@wer.com" --role="subscriber" --user_pass="${READONLY_PASS}"
+  /usr/local/bin/wp user create "${READONLY_USER}" "${READONLY_USER}@wer.com" --role="subscriber" --user_pass="${READONLY_PASS}"++
+  
+echo "[========WP INSTALLATION STARTED========]"
+if [ ! -f "/var/www/html/wordpress/wp-config.php" ]; then
+    echo "wp-config.php non trouvé. Initialisation de WordPress..."
 
-  # Check for required environment variables
-  if [[ -z "$READONLY_USER" || -z "$READONLY_PASS" ]]; then
-    echo "Missing READONLY_USER or READONLY_PASS. Aborting."
-    exit 1
-  fi
-  # Check if user already exists
-  if /usr/local/bin/wp user get "$READONLY_USER" > /dev/null 2>&1; then
-    echo "User '$READONLY_USER' already exists. Skipping creation."
-  else
-    echo "Creating WordPress user: $READONLY_USER"
-    /usr/local/bin/wp user create "$READONLY_USER" "${READONLY_USER}@example.com" \
-      --user_pass="$READONLY_PASS" --role="subscriber" || {
-      echo "Failed to create user $READONLY_USER"
-      exit 1
-    }
-  fi
+    wp core download --allow-root
 
+    wp core config \
+        --dbhost="$DB_HOST" \
+        --dbname="$DB_NAME" \
+        --dbuser="$DB_USER" \
+        --dbpass="$DB_PASS" \
+        --allow-root
+    
+     if ! /usr/local/bin/wp core is-installed; then
+      /usr/local/bin/wp core install \
+        --url="https://${WP_HOST}" \
+        --title="${WP_TITLE}" \
+        --admin_user="${ADM_WP_NAME}" \
+        --admin_password="${ADM_WP_PASS}" \
+        --admin_email="${ADM_WP_EMAIL}"
+    fi
+    wp user create \
+        "$WP_USER" \
+        "$WP_USEREMAIL" \
+        --user_pass="$WP_USERPASS" \
+        --allow-root
+
+
+	chmod -R 777 . && chown -R www-data:www-data .
+
+    echo "WordPress initialisé avec succès."
+else
+    echo "wp-config.php trouve. Aucune action effectuée."
 fi
 
+sleep 5 
+
+echo "The website is accessible."
+exec php-fpm83 -F
 
