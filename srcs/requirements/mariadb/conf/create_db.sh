@@ -1,48 +1,51 @@
-#!/bin/sh
+#!/bin/bash
 
-set -e
-
-echo "LANCEMENT DU SCRIPT DE CONFIGURATION MARIA DB"
-
-# Démarrage du serveur en arrière-plan
-mysqld_safe --datadir=/var/lib/mysql &
-
-# Pause pour laisser MariaDB démarrer
-sleep 5
-
-# ✅ Vérification des variables d'environnement
-#if [ -z "$MARIADB_USER" ] || [ -z "$MARIADB_USER_PASSWORD" ] || [ -z "$MARIADB_ROOT_PASSWORD" ] || [ -z "$MARIADB_NAME" ]; then
-#  echo "Erreur : Toutes les variables d'environnement (MARIADB_USER, MARIADB_USER_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_NAME) doivent être définies."
+# Check environment variables (optional but recommended)
+#if [ -z "$DB_PASS" ] || [ -z "$DB_ROOT" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER2" ] || [ -z "$DB_PASS2" ]; then
+#  echo "Error: Required environment variables (DB_PASS, DB_ROOT, DB_NAME, DB_USER2, DB_PASS2) are not set."
 #  exit 1
 #fi
 
-# 🔄 Attente que MariaDB soit prêt
-until mariadb -u root -e "SELECT 1" > /dev/null 2>&1; do
-  echo "Waiting for MariaDB to be ready..."
-  sleep 2
-done
+# Initialize MySQL if not already initialized
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+    chown -R mysql:mysql /var/lib/mysql
+    mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm
+fi
 
-# 🧹 Nettoyage éventuel d'utilisateur existant
-echo "DROP USER IF EXISTS '$MARIADB_USER'@'%';" | mysql -u root
+# Set up WordPress database and users if it doesn't exist
+if [ ! -d "/var/lib/mysql/wordpress" ]; then
 
-# 👤 Création de l'utilisateur de base
-echo "CREATE USER '$MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_USER_PASSWORD';" | mysql -u root
+    cat << EOF > /tmp/create_db.sql
+USE mysql;
+FLUSH PRIVILEGES;
 
-# 👤 Création de l'utilisateur root distant si besoin
-echo "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD';" | mysql -u root
+-- Clean up default/test users
+DELETE FROM mysql.user WHERE User='';
+DELETE FROM mysql.user WHERE User='wordpress_user';
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test';
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 
-# 🛡️ Attribution des privilèges
-echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_USER'@'%' WITH GRANT OPTION;" | mysql -u root
-echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;" | mysql -u root
+-- Set root password
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT}';
 
-# 🗃️ Création de la base de données
-echo "CREATE DATABASE IF NOT EXISTS \`$MARIADB_NAME\`;" | mysql -u root
+-- Create WordPress database
+CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-# 🔁 Appliquer les changements
-echo "FLUSH PRIVILEGES;" | mysql -u root
+-- Create admin user
+CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
+GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
 
-# ⛔ Arrêt du serveur MariaDB en préparation du démarrage réel
-mysqladmin -u root shutdown
+-- Create additional user
+CREATE USER '${READONLY_USER}'@'%' IDENTIFIED BY '${READONLY_PASS}';
+GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${READONLY_USER}'@'%';
 
-# 🚀 Lancement final
-exec mysqld
+FLUSH PRIVILEGES;
+EOF
+
+    # Run the SQL bootstrap
+    /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql
+
+    # Optional cleanup
+    # rm -f /tmp/create_db.sql
+fi
