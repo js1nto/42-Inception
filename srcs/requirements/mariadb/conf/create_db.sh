@@ -19,6 +19,11 @@ echo "DROP USER IF EXISTS '$MARIADB_USER'@'%';" | mysql -u root
 
 echo "CREATE USER '$MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_USER_PASSWORD';" | mysql -u root
 
+until mariadb -u root -e "SELECT 1"; do
+  echo "Waiting for MariaDB to be ready..."
+  sleep 2
+done
+
 echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_USER_PASSWORD';" | mysql -u root
 echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD';" | mysql -u root
 
