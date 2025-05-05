@@ -12,3 +12,5 @@ if [ ! -f "/var/www/wp-config.php" ]; then
     --user_pass="${READONLY_PASS}" --role="subscriber"
 
 fi
+
+
