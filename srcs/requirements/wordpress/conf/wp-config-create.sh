@@ -10,7 +10,7 @@ if [ ! -f "/var/www/wp-config.php" ]; then
   # Create additional WordPress user (read-only or other role)
   /usr/local/bin/wp user create "${READONLY_USER}" "${READONLY_USER}@example.com" \
     --user_pass="${READONLY_PASS}" --role="subscriber"
-
+  wp user create newuser newuser@example.com --role=subscriber --user_pass=StrongPassword123
 fi
 
 
