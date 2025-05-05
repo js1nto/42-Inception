@@ -27,6 +27,7 @@ echo "KEY_=./requirements/tools/$LOGIN.42.fr.key" >> ./srcs/.env
 echo "DB_NAME=wordpress" >> ./srcs/.env
 echo "DB_USER=wpuser" >> ./srcs/.env
 echo "DB_HOST=mariadb" >> ./srcs/.env
+echo "DB_USERPASS=1234" >> ./srcs/.env
 echo "WP_TITLE=INCEPTION_$NAME" >> ./srcs/.env
 echo "WP_USERNAME=$NAME" >> ./srcs/.env
 echo "WP_USEREMAIL=$NAME@42.fr" >> ./srcs/.env
